@@ -85,7 +85,7 @@ STOP SLAVE;
 -- On Slave Side Use This Configuration.
 -- With GTID Configuration.
 CHANGE MASTER TO
-  MASTER_HOST='Master Host Name Ex. supersee',
+  MASTER_HOST='Master Host IP Ex. 192.170.1.000',
   MASTER_USER='<username>',
   MASTER_PASSWORD='<password>',
   MASTER_AUTO_POSITION=1;
@@ -124,7 +124,7 @@ SHOW SLAVE STATUS\G;
 #### Check status of connection
 ```bash
 # Check this configuration 
-Master_Host: supersee
+Master_Host: 192.170.1.000
 Master_User: raoinfotech
 Master_Port: 3306
 Connect_Retry: 60
