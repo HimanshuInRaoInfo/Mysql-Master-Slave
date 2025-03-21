@@ -4,6 +4,7 @@
 #### This configuration use only in master side database.
 
 ```bash
+
 # first run this command to go bash of master
 cd /etc/mysql
 
@@ -20,9 +21,11 @@ enforce-gtid-consistency=ON
 
 # Restart your mysql service
 sudo systemctl restart mysql
+
 ```
 - Note for master config file ` my.cnf ` | `C:\ProgramData\MySQL\MySQL Server 8.0\my.ini` use this configuration <br>
   ```
+
   [mysqld]
   server-id=1 
   log-bin=mysql-bin 
@@ -31,12 +34,14 @@ sudo systemctl restart mysql
   bind-address=0.0.0.0 
   gtid_mode=ON
   enforce-gtid-consistency=ON
+
   ```
 
 ---
 
 ### Step 2: Configure On Slave MySQL
 ```bash
+
 # first run this command to go bash of master
 cd /etc/mysql
 
@@ -51,15 +56,18 @@ enforce_gtid_consistency=ON
 
 # Restart your mysql service
 sudo systemctl restart mysql
+
 ```
 - Note for slave/replica config file ` my.cnf ` | `C:\ProgramData\MySQL\MySQL Server 8.0\my.ini` use this configuration <br>
   ```
+
   [mysqld]
   server-id=2
   relay-log=mysql-relay-bin
   log-bin=mysql-bin
   gtid_mode=ON
   enforce_gtid_consistency=ON
+
   ```
 
 ---
@@ -67,19 +75,24 @@ sudo systemctl restart mysql
 ### Step 3: Now create user for Slave | Replica connections.
 #### For master side mysql cli create user with this code
 ```sql
+
 CREATE USER 'username'@'%' IDENTIFIED BY 'password';
 GRANT REPLICATION SLAVE ON *.* TO 'username'@'%';
 FLUSH PRIVILEGES;
+
 ```
 
 #### Check Master Status
 ```sql
+
 SHOW MASTER STATUS;
+
 ```
 
 ### Step 4: Configure Slave for Replication
 #### Configure Slave
 ```sql
+
 -- Stop slave if start
 STOP SLAVE;
 -- On Slave Side Use This Configuration.
@@ -92,17 +105,22 @@ CHANGE MASTER TO
 
 -- If start slave stop it not start.
 STOP SLAVE;
+
 ```
 
 #### Verify Slave Status
 ```sql
+
 SHOW SLAVE STATUS\G
+
 ```
 
 #### After configured successfully user export backup database of current in master side.
 ```bash
+
 # For taking backup without lock the table and maintain consistency use this way
 mysqldump -uroot -proot --single-transaction --master-data=2 --flush-logs --hex-blob --set-gtid-purged=ON --databases supersee > /your-path/backup.sql
+
 ```
 - Note : <br>
 `--single-transaction` is for without lock database it can create a backup files. <br>
@@ -112,17 +130,20 @@ mysqldump -uroot -proot --single-transaction --master-data=2 --flush-logs --hex-
 
 #### Now we first import backup of master database of master-data.sql in slave side.
 ```bash
+
 mysql -uroot -proot database_name < /your-path/backup.sql
 
 # After successfull import database we show status of slave and start slave if not configured use above step configure slave.
 START SLAVE;
 SHOW SLAVE STATUS\G;
+
 ```
 
 ---
 
 #### Check status of connection
 ```bash
+
 # Check this configuration 
 Master_Host: 192.170.1.000
 Master_User: raoinfotech
@@ -181,14 +202,18 @@ START SLAVE;
 ### Step 5: Test Replication
 #### Insert Data into Master
 ```sql
+
 USE employees;
 INSERT INTO departments (dept_no, dept_name) VALUES ('d010', 'New Department');
+
 ```
 
 #### Check Data in Slave
 ```sql
+
 USE employees;
 SELECT * FROM departments;
+
 ```
 
 If the data appears, replication is working correctly!
