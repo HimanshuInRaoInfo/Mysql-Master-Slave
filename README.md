@@ -222,3 +222,12 @@ If the data appears, replication is working correctly!
 
 ### For GTID Information use this document :
 - https://dev.mysql.com/doc/refman/8.4/en/replication-gtids-howto.html
+
+## Note 
+if you want to reset slave at all please use this below command after reset slave all
+```sql
+RESET MASTER;
+```
+if the slave have not the last GTID correct from the master 
+then use set gtid = "last gtid master"
+
